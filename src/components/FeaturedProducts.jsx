@@ -77,6 +77,34 @@ export const MOCK_PRODUCTS = [
     name: "Mystery Beauty Box",
     description: "A surprise selection of our top-rated makeup and skincare products.",
     price: 3000,
+  },
+  {
+    id: 12,
+    name: "Luxury Eyeshadow Palette",
+    description: "A stunning palette of highly pigmented, blendable shades.",
+    price: 3999,
+    imageSrc: "/Screenshot From 2026-03-04 19-37-42.png",
+  },
+  {
+    id: 13,
+    name: "Premium Skincare Set",
+    description: "A complete set of our best-selling skincare essentials.",
+    price: 2999,
+    imageSrc: "/Screenshot From 2026-03-04 19-38-02.png",
+  },
+  {
+    id: 14,
+    name: "Pro Makeup Brushes",
+    description: "Professional-grade brushes for flawless application.",
+    price: 2999,
+    imageSrc: "/Screenshot From 2026-03-04 19-39-07.png",
+  },
+  {
+    id: 15,
+    name: "3 Colors Matte Lipsticks",
+    description: "A stunning set of 3 long-lasting matte lipsticks.",
+    price: 3999,
+    imageSrc: "/Screenshot From 2026-03-04 19-39-43.png",
   }
 ];
 

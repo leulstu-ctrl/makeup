@@ -60,7 +60,7 @@ export default function Checkout() {
   const handleConfirmPayment = (e) => {
     e.preventDefault();
     // In a real app, verify the confirmation code and screenshot upload here
-    if (confirmationCode.trim() !== '') {
+    if (confirmationCode.trim() !== '' || screenshotFileName !== '') {
       setStep('success');
     }
   };
@@ -137,14 +137,13 @@ export default function Checkout() {
               <div className="space-y-4">
                 <div>
                   <label htmlFor="confirmation" className="block text-sm font-medium text-brand-brown">
-                    Confirmation Letter / Transaction ID <span className="text-red-500">*</span>
+                    Confirmation Letter / Transaction ID <span className="text-brand-lightBrown text-xs font-normal">(Optional if screenshot uploaded)</span>
                   </label>
                   <div className="mt-2">
                     <input
                       type="text"
                       id="confirmation"
                       name="confirmation"
-                      required
                       value={confirmationCode}
                       onChange={(e) => setConfirmationCode(e.target.value)}
                       className="block w-full border-brand-pink/50 rounded-md shadow-sm focus:ring-brand-gold focus:border-brand-gold sm:text-sm p-3 border bg-white"
@@ -202,7 +201,7 @@ export default function Checkout() {
                 </button>
                 <button
                   type="submit"
-                  disabled={confirmationCode.trim() === ''}
+                  disabled={confirmationCode.trim() === '' && screenshotFileName === ''}
                   className="w-full sm:w-2/3 flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-brand-light bg-brand-dark hover:bg-brand-brown focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Confirm Payment
