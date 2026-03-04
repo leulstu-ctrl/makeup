@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { ImageOff } from 'lucide-react';
 
 export const MOCK_PRODUCTS = [
   {
@@ -41,7 +42,41 @@ export const MOCK_PRODUCTS = [
     name: "Hydrating Facial Serum",
     description: "Infused with botanical extracts to nourish and plump the skin.",
     price: 2100,
-    imageSrc: "https://images.unsplash.com/photo-1617897903246-719242758050?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageSrc: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 7,
+    name: "Volumizing Mascara",
+    description: "Achieve bold, dramatic lashes with just one coat.",
+    price: 950,
+    imageSrc: "https://images.unsplash.com/photo-1512496015851-a1c8e48d9079?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 8,
+    name: "Rosehip Face Oil",
+    description: "Pure, cold-pressed rosehip oil for a bright and glowing complexion.",
+    price: 1800,
+    imageSrc: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 9,
+    name: "Cream Blush Duo",
+    description: "Two complementary shades that blend seamlessly into the skin.",
+    price: 1300,
+    imageSrc: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 10,
+    name: "Gentle Cleansing Balm",
+    description: "Melts away makeup and impurities without stripping the skin.",
+    price: 1600,
+    imageSrc: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: 11,
+    name: "Mystery Beauty Box",
+    description: "A surprise selection of our top-rated makeup and skincare products.",
+    price: 3000,
   }
 ];
 
@@ -57,12 +92,19 @@ export default function FeaturedProducts() {
           {MOCK_PRODUCTS.map((product) => (
             <div key={product.id} className="group relative flex flex-col bg-white rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-brand-pink/20">
 
-              <div className="aspect-w-4 aspect-h-5 bg-brand-pink/10 sm:aspect-none sm:h-80 overflow-hidden">
-                <img
-                  src={product.imageSrc}
-                  alt={product.name}
-                  className="h-full w-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
-                />
+              <div className="aspect-w-4 aspect-h-5 bg-brand-pink/10 sm:aspect-none sm:h-80 overflow-hidden flex items-center justify-center relative">
+                {product.imageSrc ? (
+                  <img
+                    src={product.imageSrc}
+                    alt={product.name}
+                    className="h-full w-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500 absolute inset-0"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-brand-lightBrown p-4">
+                    <ImageOff className="h-12 w-12 mb-2 opacity-50" />
+                    <span className="text-sm font-medium">Image coming soon</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex-1 p-4 space-y-2 flex flex-col justify-between">

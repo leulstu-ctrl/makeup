@@ -8,6 +8,7 @@ const PAYMENT_METHODS = [
 ];
 
 import { useEffect } from 'react';
+import { ImageOff } from 'lucide-react';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function Checkout() {
   const [step, setStep] = useState('form'); // 'form' | 'payment' | 'success'
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
   const [confirmationCode, setConfirmationCode] = useState('');
+  const [screenshotFileName, setScreenshotFileName] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -26,16 +28,24 @@ export default function Checkout() {
   });
 
   useEffect(() => {
+    let timerId;
     if (step === 'payment' && timeLeft > 0) {
-      const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-      return () => clearInterval(timerId);
-    } else if (timeLeft === 0 && step === 'payment') {
-      // Optional: Handle timeout (e.g., reset to form or show message)
-      setStep('form');
-      setTimeLeft(600);
-      alert("Payment session expired. Please try again.");
+      timerId = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+             clearInterval(timerId);
+             setStep('form');
+             alert("Payment session expired. Please try again.");
+             return 600;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     }
-  }, [step, timeLeft]);
+    return () => {
+      if (timerId) clearInterval(timerId);
+    };
+  }, [step]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -49,9 +59,16 @@ export default function Checkout() {
 
   const handleConfirmPayment = (e) => {
     e.preventDefault();
-    // In a real app, verify the confirmation code here
+    // In a real app, verify the confirmation code and screenshot upload here
     if (confirmationCode.trim() !== '') {
       setStep('success');
+    }
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setScreenshotFileName(file.name);
     }
   };
 
@@ -117,26 +134,65 @@ export default function Checkout() {
             </div>
 
             <form onSubmit={handleConfirmPayment} className="space-y-6 pt-2">
-              <div>
-                <label htmlFor="confirmation" className="block text-sm font-medium text-brand-brown">
-                  Confirmation Letter / Transaction ID
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    id="confirmation"
-                    name="confirmation"
-                    required
-                    value={confirmationCode}
-                    onChange={(e) => setConfirmationCode(e.target.value)}
-                    className="block w-full border-brand-pink/50 rounded-md shadow-sm focus:ring-brand-gold focus:border-brand-gold sm:text-sm p-3 border bg-white"
-                    placeholder="e.g., TXN123456789"
-                  />
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="confirmation" className="block text-sm font-medium text-brand-brown">
+                    Confirmation Letter / Transaction ID <span className="text-red-500">*</span>
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      id="confirmation"
+                      name="confirmation"
+                      required
+                      value={confirmationCode}
+                      onChange={(e) => setConfirmationCode(e.target.value)}
+                      className="block w-full border-brand-pink/50 rounded-md shadow-sm focus:ring-brand-gold focus:border-brand-gold sm:text-sm p-3 border bg-white"
+                      placeholder="e.g., TXN123456789"
+                    />
+                  </div>
+                  <p className="mt-2 text-xs text-brand-lightBrown">Enter the confirmation code you received after transferring the money.</p>
                 </div>
-                <p className="mt-2 text-xs text-brand-lightBrown">Enter the confirmation code you received after transferring the money.</p>
+
+                <div>
+                  <label className="block text-sm font-medium text-brand-brown">
+                    Upload Screenshot <span className="text-brand-lightBrown text-xs font-normal">(Optional)</span>
+                  </label>
+                  <div className="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-brand-pink/50 border-dashed rounded-md hover:border-brand-gold hover:bg-brand-pink/5 transition-colors">
+                    <div className="space-y-1 text-center">
+                      <svg
+                        className="mx-auto h-12 w-12 text-brand-lightBrown"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <div className="flex text-sm text-brand-brown justify-center">
+                        <label
+                          htmlFor="file-upload"
+                          className="relative cursor-pointer bg-white rounded-md font-medium text-brand-gold hover:text-brand-brown focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-brand-gold p-1"
+                        >
+                          <span>Upload a file</span>
+                          <input id="file-upload" name="file-upload" type="file" className="sr-only" accept="image/*" onChange={handleFileUpload} />
+                        </label>
+                      </div>
+                      <p className="text-xs text-brand-lightBrown">PNG, JPG, GIF up to 5MB</p>
+                      {screenshotFileName && (
+                        <p className="text-xs text-green-600 font-medium mt-2">Selected: {screenshotFileName}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                  <button
                   type="button"
                   onClick={() => setStep('form')}
@@ -185,12 +241,16 @@ export default function Checkout() {
               ) : (
                 <ul role="list" className="divide-y divide-brand-pink/30 border-t border-b border-brand-pink/30 mb-6 max-h-96 overflow-y-auto">
                     <li className="flex py-4">
-                      <div className="flex-shrink-0">
-                        <img
-                          src={product.imageSrc}
-                          alt={product.name}
-                          className="w-16 h-16 rounded-md object-center object-cover border border-brand-pink/20"
-                        />
+                      <div className="flex-shrink-0 w-16 h-16 rounded-md border border-brand-pink/20 overflow-hidden bg-brand-pink/10 flex items-center justify-center">
+                        {product.imageSrc ? (
+                          <img
+                            src={product.imageSrc}
+                            alt={product.name}
+                            className="w-full h-full object-center object-cover"
+                          />
+                        ) : (
+                          <ImageOff className="h-6 w-6 text-brand-lightBrown opacity-50" />
+                        )}
                       </div>
                       <div className="ml-4 flex-1 flex flex-col">
                         <div>
