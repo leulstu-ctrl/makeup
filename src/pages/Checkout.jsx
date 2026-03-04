@@ -1,20 +1,18 @@
 import { useState } from 'react';
-import { useCart } from '../contexts/CartContext';
 import { CheckCircle2, ChevronLeft } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
 const PAYMENT_METHODS = [
-  { id: 'telebirr', name: 'Telebirr', description: 'Pay easily with your phone' },
-  { id: 'cbebirr', name: 'CBE Birr', description: 'Direct from your CBE account' },
-  { id: 'mpesa', name: 'M-Pesa Sahar', description: 'Fast and secure mobile money' },
-  { id: 'cod', name: 'Cash on Delivery', description: 'Pay when your order arrives' },
+  { id: 'ebirr', name: 'EBIRR', description: 'Pay securely with EBIRR' },
 ];
 
 export default function Checkout() {
-  const { items, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
-  const [selectedPayment, setSelectedPayment] = useState('telebirr');
+  const location = useLocation();
+  const product = location.state?.product;
+
+  const [selectedPayment, setSelectedPayment] = useState('ebirr');
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -32,11 +30,6 @@ export default function Checkout() {
     e.preventDefault();
     // In a real app, this would submit the order to a backend
     setIsSuccess(true);
-
-    // Clear cart after a short delay so the user can see the success state
-    setTimeout(() => {
-      clearCart();
-    }, 1500);
   };
 
   if (isSuccess) {
@@ -83,12 +76,11 @@ export default function Checkout() {
                 Order Summary
               </h2>
 
-              {items.length === 0 ? (
-                <p className="text-brand-lightBrown">Your cart is empty.</p>
+              {!product ? (
+                <p className="text-brand-lightBrown">No product selected.</p>
               ) : (
                 <ul role="list" className="divide-y divide-brand-pink/30 border-t border-b border-brand-pink/30 mb-6 max-h-96 overflow-y-auto">
-                  {items.map((product) => (
-                    <li key={product.id} className="flex py-4">
+                    <li className="flex py-4">
                       <div className="flex-shrink-0">
                         <img
                           src={product.imageSrc}
@@ -100,20 +92,19 @@ export default function Checkout() {
                         <div>
                           <div className="flex justify-between text-sm font-medium text-brand-dark">
                             <h3 className="font-serif">{product.name}</h3>
-                            <p className="ml-4 text-brand-gold whitespace-nowrap">ETB {(product.price * product.quantity).toLocaleString()}</p>
+                            <p className="ml-4 text-brand-gold whitespace-nowrap">ETB {product.price.toLocaleString()}</p>
                           </div>
-                          <p className="mt-1 text-sm text-brand-lightBrown">Qty {product.quantity}</p>
+                          <p className="mt-1 text-sm text-brand-lightBrown">Qty 1</p>
                         </div>
                       </div>
                     </li>
-                  ))}
                 </ul>
               )}
 
               <dl className="space-y-4 text-sm text-brand-lightBrown">
                 <div className="flex items-center justify-between">
                   <dt>Subtotal</dt>
-                  <dd className="font-medium text-brand-dark">ETB {totalPrice.toLocaleString()}</dd>
+                  <dd className="font-medium text-brand-dark">ETB {product ? product.price.toLocaleString() : 0}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt>Shipping estimate</dt>
@@ -121,7 +112,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-brand-pink/50 pt-4">
                   <dt className="text-base font-medium text-brand-dark font-serif">Order Total</dt>
-                  <dd className="text-lg font-bold text-brand-gold font-serif">ETB {(totalPrice + (items.length > 0 ? 150 : 0)).toLocaleString()}</dd>
+                  <dd className="text-lg font-bold text-brand-gold font-serif">ETB {product ? (product.price + 150).toLocaleString() : 0}</dd>
                 </div>
               </dl>
             </section>
@@ -178,12 +169,9 @@ export default function Checkout() {
                         className="block w-full border-brand-pink/50 rounded-md shadow-sm focus:ring-brand-gold focus:border-brand-gold sm:text-sm p-2.5 border bg-brand-light/20"
                       >
                         <option value="Addis Ababa">Addis Ababa</option>
-                        <option value="Dire Dawa">Dire Dawa</option>
-                        <option value="Adama">Adama (Nazret)</option>
-                        <option value="Hawassa">Hawassa</option>
-                        <option value="Bahir Dar">Bahir Dar</option>
-                        <option value="Mekelle">Mekelle</option>
-                        <option value="Gondar">Gondar</option>
+                        <option value="Oromia">Oromia</option>
+                        <option value="Harar">Harar</option>
+                        <option value="Abama">Abama</option>
                       </select>
                     </div>
                   </div>
@@ -257,7 +245,7 @@ export default function Checkout() {
               <div className="mt-10 pt-6 border-t border-brand-pink/50 flex justify-end">
                 <button
                   type="submit"
-                  disabled={items.length === 0}
+                  disabled={!product}
                   className="w-full sm:w-auto bg-brand-dark border border-transparent rounded-md shadow-sm py-3 px-8 text-base font-medium text-brand-light hover:bg-brand-brown focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Place Order

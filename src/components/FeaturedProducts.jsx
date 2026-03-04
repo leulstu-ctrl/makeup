@@ -1,7 +1,6 @@
-import { ShoppingCart } from 'lucide-react';
-import { useCart } from '../contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
 
-const MOCK_PRODUCTS = [
+export const MOCK_PRODUCTS = [
   {
     id: 1,
     name: "Radiant Glow Foundation",
@@ -47,7 +46,7 @@ const MOCK_PRODUCTS = [
 ];
 
 export default function FeaturedProducts() {
-  const { addItem } = useCart();
+  const navigate = useNavigate();
 
   return (
     <div id="products" className="bg-brand-light">
@@ -87,12 +86,12 @@ export default function FeaturedProducts() {
                   <button
                     onClick={(e) => {
                       e.preventDefault();
-                      addItem(product);
+                      navigate('/checkout', { state: { product } });
                     }}
-                    className="inline-flex items-center justify-center p-2 rounded-full bg-brand-pink text-brand-brown hover:bg-brand-gold hover:text-brand-light transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold"
-                    aria-label={`Add ${product.name} to cart`}
+                    className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-brand-pink text-brand-brown hover:bg-brand-gold hover:text-brand-light transition-colors font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold"
+                    aria-label={`Buy ${product.name}`}
                   >
-                    <ShoppingCart className="h-5 w-5" />
+                    Buy Now
                   </button>
                 </div>
               </div>

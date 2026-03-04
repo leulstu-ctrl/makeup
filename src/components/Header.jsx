@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { useCart } from '../contexts/CartContext';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { totalItems, toggleCart } = useCart();
 
   const navLinks = [
     { name: 'Face', href: '#' },
@@ -50,20 +48,6 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Cart Icon */}
-          <div className="flex items-center lg:justify-end">
-            <button
-              onClick={toggleCart}
-              className="text-brand-brown hover:text-brand-gold p-2 relative transition-colors"
-            >
-              <ShoppingBag size={24} />
-              {totalItems > 0 && (
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-brand-light transform translate-x-1/4 -translate-y-1/4 bg-brand-gold rounded-full">
-                  {totalItems}
-                </span>
-              )}
-            </button>
-          </div>
         </div>
       </div>
 
