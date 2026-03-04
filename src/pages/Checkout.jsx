@@ -7,19 +7,35 @@ const PAYMENT_METHODS = [
   { id: 'ebirr', name: 'EBIRR', description: 'Pay securely with EBIRR' },
 ];
 
+import { useEffect } from 'react';
+
 export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
   const product = location.state?.product;
 
   const [selectedPayment, setSelectedPayment] = useState('ebirr');
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [step, setStep] = useState('form'); // 'form' | 'payment' | 'success'
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes in seconds
+  const [confirmationCode, setConfirmationCode] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     city: 'Addis Ababa',
     address: ''
   });
+
+  useEffect(() => {
+    if (step === 'payment' && timeLeft > 0) {
+      const timerId = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timerId);
+    } else if (timeLeft === 0 && step === 'payment') {
+      // Optional: Handle timeout (e.g., reset to form or show message)
+      setStep('form');
+      setTimeLeft(600);
+      alert("Payment session expired. Please try again.");
+    }
+  }, [step, timeLeft]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,11 +44,24 @@ export default function Checkout() {
 
   const handlePlaceOrder = (e) => {
     e.preventDefault();
-    // In a real app, this would submit the order to a backend
-    setIsSuccess(true);
+    setStep('payment');
   };
 
-  if (isSuccess) {
+  const handleConfirmPayment = (e) => {
+    e.preventDefault();
+    // In a real app, verify the confirmation code here
+    if (confirmationCode.trim() !== '') {
+      setStep('success');
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  if (step === 'success') {
     return (
       <div className="min-h-screen bg-brand-light flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl border border-brand-pink text-center transform transition-all animate-fade-in-up">
@@ -51,6 +80,81 @@ export default function Checkout() {
               Return Home
             </button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 'payment') {
+    const orderTotal = product ? product.price + 150 : 0;
+
+    return (
+      <div className="min-h-screen bg-brand-light flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-xl shadow-2xl border border-brand-pink transform transition-all animate-fade-in-up">
+
+          <div className="text-center">
+            <h2 className="text-3xl font-extrabold text-brand-dark font-serif mb-2">Complete Payment</h2>
+            <p className="text-brand-lightBrown text-sm">Please follow the instructions below to finalize your order.</p>
+          </div>
+
+          <div className="bg-brand-pink/10 rounded-lg p-6 border border-brand-pink/30 text-center">
+            <div className="text-4xl font-mono font-bold text-brand-dark mb-2 tracking-wider">
+              {formatTime(timeLeft)}
+            </div>
+            <p className="text-xs text-brand-brown uppercase tracking-widest">Time Remaining</p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="border-b border-brand-pink/30 pb-4">
+              <h3 className="text-sm font-medium text-brand-brown uppercase tracking-wider mb-3">Payment Instructions</h3>
+              <ol className="list-decimal list-inside text-sm text-brand-dark space-y-2">
+                <li>Open your EBIRR application.</li>
+                <li>Send exactly <span className="font-bold text-brand-gold">ETB {orderTotal.toLocaleString()}</span> to the following number:</li>
+              </ol>
+              <div className="mt-4 bg-brand-light/50 p-4 rounded-md text-center border border-brand-pink/50">
+                <span className="text-2xl font-bold text-brand-dark tracking-widest">0992910265</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleConfirmPayment} className="space-y-6 pt-2">
+              <div>
+                <label htmlFor="confirmation" className="block text-sm font-medium text-brand-brown">
+                  Confirmation Letter / Transaction ID
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    id="confirmation"
+                    name="confirmation"
+                    required
+                    value={confirmationCode}
+                    onChange={(e) => setConfirmationCode(e.target.value)}
+                    className="block w-full border-brand-pink/50 rounded-md shadow-sm focus:ring-brand-gold focus:border-brand-gold sm:text-sm p-3 border bg-white"
+                    placeholder="e.g., TXN123456789"
+                  />
+                </div>
+                <p className="mt-2 text-xs text-brand-lightBrown">Enter the confirmation code you received after transferring the money.</p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                 <button
+                  type="button"
+                  onClick={() => setStep('form')}
+                  className="w-full sm:w-1/3 flex justify-center py-3 px-4 border border-brand-pink rounded-md shadow-sm text-sm font-medium text-brand-brown bg-white hover:bg-brand-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={confirmationCode.trim() === ''}
+                  className="w-full sm:w-2/3 flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-brand-light bg-brand-dark hover:bg-brand-brown focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Confirm Payment
+                </button>
+              </div>
+            </form>
+          </div>
+
         </div>
       </div>
     );
@@ -170,7 +274,15 @@ export default function Checkout() {
                       >
                         <option value="Addis Ababa">Addis Ababa</option>
                         <option value="Oromia">Oromia</option>
-                        <option value="Harar">Harar</option>
+                        <option value="Amhara">Amhara</option>
+                        <option value="Tigray">Tigray</option>
+                        <option value="Sidama">Sidama</option>
+                        <option value="Somali">Somali</option>
+                        <option value="Afar">Afar</option>
+                        <option value="Benishangul-Gumuz">Benishangul-Gumuz</option>
+                        <option value="Gambela">Gambela</option>
+                        <option value="Harar">Harari</option>
+                        <option value="Dire Dawa">Dire Dawa</option>
                         <option value="Abama">Abama</option>
                       </select>
                     </div>
