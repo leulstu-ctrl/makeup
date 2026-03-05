@@ -252,7 +252,10 @@ export default function Checkout() {
                         <div>
                           <div className="flex justify-between text-sm font-medium text-brand-dark">
                             <h3 className="font-serif">{product.name}</h3>
-                            <p className="ml-4 text-brand-gold whitespace-nowrap">ETB {product.price.toLocaleString()}</p>
+                            <div className="ml-4 flex flex-col items-end">
+                              <p className="text-brand-gold whitespace-nowrap">ETB {(product.price * 0.7).toLocaleString()}</p>
+                              <p className="text-xs text-gray-400 line-through whitespace-nowrap">ETB {product.price.toLocaleString()}</p>
+                            </div>
                           </div>
                           <p className="mt-1 text-sm text-brand-lightBrown">Qty 1</p>
                         </div>
@@ -264,7 +267,7 @@ export default function Checkout() {
               <dl className="space-y-4 text-sm text-brand-lightBrown">
                 <div className="flex items-center justify-between">
                   <dt>Subtotal</dt>
-                  <dd className="font-medium text-brand-dark">ETB {product ? product.price.toLocaleString() : 0}</dd>
+                  <dd className="font-medium text-brand-dark">ETB {product ? (product.price * 0.7).toLocaleString() : 0}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt>Shipping estimate</dt>
@@ -272,7 +275,11 @@ export default function Checkout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-brand-pink/50 pt-4">
                   <dt className="text-base font-medium text-brand-dark font-serif">Order Total</dt>
-                  <dd className="text-lg font-bold text-brand-gold font-serif">ETB {product ? (product.price + 150).toLocaleString() : 0}</dd>
+                  <dd className="text-lg font-bold text-brand-gold font-serif">ETB {product ? (product.price * 0.7 + 150).toLocaleString() : 0}</dd>
+                </div>
+                <div className="flex items-center justify-between bg-brand-pink/10 p-3 rounded-md">
+                  <dt className="text-sm font-semibold text-brand-pink">First Purchase Discount Applied (30%)</dt>
+                  <dd className="text-sm font-bold text-brand-pink">- ETB {product ? (product.price * 0.3).toLocaleString() : 0}</dd>
                 </div>
               </dl>
             </section>

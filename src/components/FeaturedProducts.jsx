@@ -35,7 +35,7 @@ export const MOCK_PRODUCTS = [
     name: "Luminous Highlighting Powder",
     description: "A finely-milled powder for a buildable, natural-looking glow.",
     price: 1100,
-    imageSrc: "https://images.unsplash.com/photo-1590156546946-cb554ea88f11?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageSrc: "/Screenshot_20260305_074513_Chrome.jpg",
   },
   {
     id: 6,
@@ -49,7 +49,7 @@ export const MOCK_PRODUCTS = [
     name: "Volumizing Mascara",
     description: "Achieve bold, dramatic lashes with just one coat.",
     price: 950,
-    imageSrc: "https://images.unsplash.com/photo-1512496015851-a1c8e48d9079?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    imageSrc: "/Screenshot_20260305_074503_Chrome.jpg",
   },
   {
     id: 8,
@@ -149,9 +149,13 @@ export default function FeaturedProducts() {
                 </div>
 
                 <div className="pt-4 flex items-center justify-between mt-auto z-10 relative">
-                  <p className="text-lg font-medium text-brand-gold">
-                    ETB {product.price.toLocaleString()}
-                  </p>
+                  <div className="flex flex-col">
+                    <p className="text-lg font-medium text-brand-gold">
+                      ETB {(product.price * 0.7).toLocaleString()}
+                      <span className="ml-2 text-sm text-gray-400 line-through">ETB {product.price.toLocaleString()}</span>
+                    </p>
+                    <span className="text-xs text-brand-pink font-semibold">30% OFF FIRST PURCHASE</span>
+                  </div>
 
                   <button
                     onClick={(e) => {
