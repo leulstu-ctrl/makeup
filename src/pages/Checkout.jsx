@@ -1,14 +1,11 @@
-import { useState } from 'react';
-import { CheckCircle2, ChevronLeft } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CheckCircle2, ChevronLeft, ImageOff } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 
 const PAYMENT_METHODS = [
   { id: 'ebirr', name: 'EBIRR', description: 'Pay securely with EBIRR' },
 ];
-
-import { useEffect } from 'react';
-import { ImageOff } from 'lucide-react';
 
 export default function Checkout() {
   const navigate = useNavigate();
