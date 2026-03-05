@@ -25,23 +25,23 @@ export default function Checkout() {
   });
 
   useEffect(() => {
-    let timerId;
-    if (step === 'payment' && timeLeft > 0) {
-      timerId = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-             clearInterval(timerId);
-             setStep('form');
-             alert("Payment session expired. Please try again.");
-             return 600;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => {
-      if (timerId) clearInterval(timerId);
-    };
+    if (step !== 'payment') return;
+
+    const timerId = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerId);
+          setTimeout(() => {
+            setStep('form');
+            alert("Payment session expired. Please try again.");
+          }, 0);
+          return 600;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timerId);
   }, [step]);
 
   const handleInputChange = (e) => {
@@ -100,7 +100,7 @@ export default function Checkout() {
   }
 
   if (step === 'payment') {
-    const orderTotal = product ? product.price + 150 : 0;
+    const orderTotal = product ? (product.price * 0.7) + 150 : 0;
 
     return (
       <div className="min-h-screen bg-brand-light flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
@@ -267,7 +267,11 @@ export default function Checkout() {
               <dl className="space-y-4 text-sm text-brand-lightBrown">
                 <div className="flex items-center justify-between">
                   <dt>Subtotal</dt>
-                  <dd className="font-medium text-brand-dark">ETB {product ? (product.price * 0.7).toLocaleString() : 0}</dd>
+                  <dd className="font-medium text-brand-dark">ETB {product ? (product.price).toLocaleString() : 0}</dd>
+                </div>
+                <div className="flex items-center justify-between text-brand-pink">
+                  <dt>First Purchase Discount Applied (30%)</dt>
+                  <dd className="font-medium">- ETB {product ? (product.price * 0.3).toLocaleString() : 0}</dd>
                 </div>
                 <div className="flex items-center justify-between">
                   <dt>Shipping estimate</dt>
@@ -275,11 +279,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-brand-pink/50 pt-4">
                   <dt className="text-base font-medium text-brand-dark font-serif">Order Total</dt>
-                  <dd className="text-lg font-bold text-brand-gold font-serif">ETB {product ? (product.price * 0.7 + 150).toLocaleString() : 0}</dd>
-                </div>
-                <div className="flex items-center justify-between bg-brand-pink/10 p-3 rounded-md">
-                  <dt className="text-sm font-semibold text-brand-pink">First Purchase Discount Applied (30%)</dt>
-                  <dd className="text-sm font-bold text-brand-pink">- ETB {product ? (product.price * 0.3).toLocaleString() : 0}</dd>
+                  <dd className="text-lg font-bold text-brand-gold font-serif">ETB {product ? ((product.price * 0.7) + 150).toLocaleString() : 0}</dd>
                 </div>
               </dl>
             </section>

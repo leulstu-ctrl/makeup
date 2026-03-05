@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { ImageOff } from 'lucide-react';
 
-export const MOCK_PRODUCTS = [
+const MOCK_PRODUCTS = [
   {
     id: 1,
     name: "Radiant Glow Foundation",
@@ -31,25 +31,11 @@ export const MOCK_PRODUCTS = [
     imageSrc: "https://images.unsplash.com/photo-1629198688000-71f23e745b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
   },
   {
-    id: 5,
-    name: "Luminous Highlighting Powder",
-    description: "A finely-milled powder for a buildable, natural-looking glow.",
-    price: 1100,
-    imageSrc: "/Screenshot_20260305_074513_Chrome.jpg",
-  },
-  {
     id: 6,
     name: "Hydrating Facial Serum",
     description: "Infused with botanical extracts to nourish and plump the skin.",
     price: 2100,
     imageSrc: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 7,
-    name: "Volumizing Mascara",
-    description: "Achieve bold, dramatic lashes with just one coat.",
-    price: 950,
-    imageSrc: "/Screenshot_20260305_074503_Chrome.jpg",
   },
   {
     id: 8,
@@ -71,12 +57,6 @@ export const MOCK_PRODUCTS = [
     description: "Melts away makeup and impurities without stripping the skin.",
     price: 1600,
     imageSrc: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 11,
-    name: "Mystery Beauty Box",
-    description: "A surprise selection of our top-rated makeup and skincare products.",
-    price: 3000,
   },
   {
     id: 12,
