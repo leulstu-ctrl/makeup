@@ -120,7 +120,7 @@ export default function FeaturedProducts() {
           {MOCK_PRODUCTS.map((product) => (
             <div key={product.id} className="group relative flex flex-col bg-white rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-brand-pink/20">
 
-              <div className="aspect-[4/5] h-64 sm:h-80 bg-brand-pink/10 overflow-hidden flex items-center justify-center relative">
+              <div className="aspect-[4/5] h-64 sm:h-80 bg-brand-pink/10 overflow-hidden flex items-center justify-center relative w-full">
                 {product.imageSrc ? (
                   <img
                     src={product.imageSrc}
